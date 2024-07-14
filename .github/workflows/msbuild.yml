@@ -1,0 +1,23 @@
+name: MSBuild
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: windows-2022
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Build
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild Source -m /p:Configuration=Debug /p:Platform=Win32 && msbuild Source -m /p:Configuration=Debug /p:Platform=x64 && msbuild Source -m /p:Configuration=DebugConsole /p:Platform=Win32 && msbuild Source -m /p:Configuration=DebugConsole /p:Platform=x64 && msbuild Source -m /p:Configuration=Release /p:Platform=Win32 && msbuild Source -m /p:Configuration=Release /p:Platform=x64 # && msbuild Source -m /p:Configuration=ReleaseInternal /p:Platform=Win32 && msbuild Source -m /p:Configuration=ReleaseInternal /p:Platform=x64 && msbuild Source -m /p:Configuration=ReleaseInternalConsole /p:Platform=Win32 && msbuild Source -m /p:Configuration=ReleaseInternalConsole /p:Platform=x64
+
+    - name: Upload
+      uses: actions/upload-artifact@v3
+      with:
+         name: MSBuild
+         path: .
